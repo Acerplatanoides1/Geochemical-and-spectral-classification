@@ -241,6 +241,7 @@ mahal_chem = mahal_chemia(PCA_load_chem)
 ```
 
 Spectra
+
 ```{r}
 manh_spectra <- function(PCA_loadings) {
   manhat=list(manh_spec_w7_7= as.matrix(dist(PCA_load_spec[[1]], method = "Manhattan")),
@@ -272,8 +273,10 @@ mahal_spect = mahal_spectra(PCA_load_chem)
 ```
 # Gaussian Mixture Modelling 
 
-1. Mixture model chemia
+1. Mixture model chemistry
+
 Manhattan
+
 ```{r}
 chem_mod_man <- function(PCA_loadings) {
   chem_mod_man = list(chemia_model_man_7= Mclust(manh_chem[[1]],G = 1:10),
@@ -284,10 +287,10 @@ chem_mod_man <- function(PCA_loadings) {
 }
 
 chem_mod_man = chem_mod_man(manh_chem)
-
 ```
 
 Mahalanobis
+
 ```{r}
 chem_mod_mahal <- function(PCA_loadings) {
   chem_mod_mahal = list(chemia_model_mahal_7= Mclust(mahal_chem[[1]],G = 1:10),
@@ -298,12 +301,12 @@ chem_mod_mahal <- function(PCA_loadings) {
 }
 
 chem_mod_mahal = chem_mod_mahal(mahal_chem)
-
-
 ```
 
-2. Mixture model spektra
+2. Mixture model spectra
+
 Manhattan
+
 ```{r}
 spec_mod_manh <- function(PCA_loadings) {
   spec_mod_manh = list(spec_model_man_w7_7= Mclust(manh_spect[[1]],G = 1:10),
@@ -318,10 +321,10 @@ spec_mod_manh <- function(PCA_loadings) {
 }
 
 spec_mod_manh = spec_mod_manh(manh_spect)
-
 ```
 
 Mahalanobis
+
 ```{r}
 spec_mod_mahal <- function(PCA_loadings) {
   spec_mod_mahal = list(spec_model_mahal_w7_7= Mclust(mahal_spect[[1]],G = 1:10),
@@ -339,9 +342,10 @@ spec_mod_mahal = spec_mod_mahal(mahal_spect)
 spec_mod_mahal
 ```
 
-Extract model classification
+3. Extract clustering from models
 
-1. Chemistry Manhattan
+Chemistry Manhattan
+
 ```{r}
 ext_chem_mod_manh <- function(mixture_model) {
   extra = list(chem_clust_manh_7=chem_mod_man[[1]]$classification,
@@ -356,7 +360,8 @@ ext_chem_mod_manh = ext_chem_mod_manh(chem_mod_man)
 ext_chem_mod_manh
 ```
 
-2. Chemistry Mahalanobis
+Chemistry Mahalanobis
+
 ```{r}
 ext_chem_mod_mahal <- function(mixture_model) {
   extra = list(chem_clust_mahal_7=chem_mod_mahal[[1]]$classification,
@@ -371,7 +376,7 @@ ext_chem_mod_mahal = ext_chem_mod_mahal(chem_mod_mahal)
 ext_chem_mod_mahal
 ```
 
-3. Spectra Manhattan
+Spectra Manhattan
 ```{r}
 ext_spec_mod_manh <- function(mixture_model) {
   extra = list(spec_clust_manh_w7_7=spec_mod_manh[[1]]$classification,
@@ -390,7 +395,7 @@ ext_spec_mod_manh = ext_spec_mod_manh(spec_mod_manh)
 ext_spec_mod_manh
 ```
 
-4. Spectra Mahalanobis
+Spectra Mahalanobis
 ```{r}
 ext_spec_mod_mahal <- function(mixture_model) {
   extra = list(spec_clust_mahal_w7_7=spec_mod_mahal[[1]]$classification,
@@ -406,14 +411,10 @@ ext_spec_mod_mahal <- function(mixture_model) {
 }
 
 ext_spec_mod_mahal = ext_spec_mod_mahal(spec_mod_mahal)
-
-
-
-
 ```
 
 
-###############################################Clustering Validation##########################
+# Clustering Validation
 
 1. V- Measure validation function - comparison of chemical and spectral classifications
 
@@ -482,29 +483,24 @@ v.measure_mahal <- function(clustering_chemia,clustering_spectra) {
     colnames(v_measure_chem_spec_mahal) = "V-Measure Mahal"
     return(v_measure_chem_spec_mahal)
 }
-?mahalanobis()
+
 v.measure_mahal =v.measure_mahal(ext_chem_mod_mahal,ext_spec_mod_mahal)
 v.measure_mahal
-
 ```
 
-3. V-Measure graph
+3. V-Measure plot
+
 ```{r}
-v.measure_manh
-v.measure_mahal
-
 v.measure_a = rbind(v.measure_manh,v.measure_mahal)
-e = c("Manhattan7_w7","Manhattan8_w7","Manhattan9_w7","Manhattan10_w7","Manhattan7_w9","Manhattan8_w9","Manhattan9_w9","Manhattan10_w9",
-      "Mahalanobis7_w7","Mahalanobis8_w7","Mahalanobis9_w7","Mahalanobis10_w7","Mahalanobis7_w9","Mahalanobis8_w9","Mahalanobis9_w9","Mahalanobis10_w9")
+lab = c("Manhattan7_w7","Manhattan8_w7","Manhattan9_w7","Manhattan10_w7","Manhattan7_w9","Manhattan8_w9","Manhattan9_w9","Manhattan10_w9","Mahalanobis7_w7","Mahalanobis8_w7","Mahalanobis9_w7","Mahalanobis10_w7","Mahalanobis7_w9","Mahalanobis8_w9","Mahalanobis9_w9","Mahalanobis10_w9")
 
-v.measure_b = data.frame(e)
-
+v.measure_b = data.frame(lab)
 
 v.measure_score = data.frame(v.measure_a, labels = v.measure_b)
-colnames(v.measure_score) = c("V.Measure","Dystans_i_wielkosc_okna")
+colnames(v.measure_score) = c("V.Measure","Distance_&_window_size")
 v.measure_score[,"V.Measure"] = round(v.measure_score[,"V.Measure"],digits =  3)
 
-ggplot(v.measure_score, aes(x = V.Measure,y = Dystans_i_wielkosc_okna))+
+ggplot(v.measure_score, aes(x = V.Measure,y = Distance_&_window_size))+
   geom_point(size = 4, col = "blue", shape = 20)+
   theme_bw()+
   theme(plot.title = element_text(hjust = 0.5, size=rel(1.5), face = "bold"))+
@@ -512,9 +508,5 @@ ggplot(v.measure_score, aes(x = V.Measure,y = Dystans_i_wielkosc_okna))+
         axis.text.y = element_text(face="bold", size=11))+
   scale_x_continuous(breaks=c(0.4,0.5,0.6,0.7,0.8,0.9,1))+
   geom_text(aes(label=V.Measure,hjust = 0,vjust = 1), size=4, colour="red")+
-  ggtitle("V-Measure dla dystansu Manhattańskiego i Mahalanobisa")
-  
-  
-  
-
+  ggtitle("V-Measure Manhattan and Mahalanobis distance")
 ```
