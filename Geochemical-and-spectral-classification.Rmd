@@ -1,4 +1,4 @@
-# Data Transformation
+# Data Preprocessing
 1. Data setup
 
 ```{r setup}
@@ -50,31 +50,12 @@ align_lines <- function(matrix,length,fill=NA) {
   m
 }
 
-# szukanie ekstremów spektr
-search_for_extrem <- function(x,range) {
-  n <- length(x)
-  output <- rep(0,n)
-  for(i in 1:n) {
-    if(is.na(x[i])) next
-    left_bound <- ifelse(i-range<1,1,i-range)
-    right_bound <- ifelse(i+range>n,n,i+range)
-    slice <- x[left_bound:right_bound]
-    min_index <- which.min(slice)
-    max_index <- which.max(slice)
-    if(min_index==range+1 || max_index==range+1) {
-      output[i] <- max(slice,na.rm=TRUE)-min(slice,na.rm=TRUE)
-      output[i] <- output[i]*ifelse(min_index==range+1,-1,1)
-    }
-  }
-  output
-}
-```
 
 Spectral SG1D transformation and rows aligning
 
 ```{r}
 
-# Transformacja danych spektralnych sg1d
+# Savitzky-Golay 1st derivative transformation and alignment of lines
 spectra_transform <-function(spectra){
   m = 1
   p = 2
@@ -112,13 +93,9 @@ spectra_transform <-function(spectra){
 }
 
 spec_sg1d = spectra_transform(data[[1]])
-
-
 ```
 
-#Calculate Matrix Error
-
-Mean error of Spectra
+# Calculate Mean error of Spectra
 
 ```{r}
 mean_error_spectra <- function(align_spectra) {
@@ -154,13 +131,12 @@ mean_error_spectra <- function(align_spectra) {
 }
 
 mean_error = mean_error_spectra(spec_sg1d)
-
 ```
 
 Plot mean error of spectra vs SG1D window size 
 
 ```{r}
-column = "Średni_błąd"
+column = "mean_error"
 colnames(mean_error) = column
 okna =  data.frame(Okno = c(3, 5, 7, 9, 11, 13,
                             15, 17, 19, 21,23,25,
@@ -175,14 +151,13 @@ ggplot(wykres1, aes(x = Okno, y = Średni_błąd))+
         axis.text.y = element_text(face="bold", size=16))+
   scale_x_continuous(breaks=c(3,5,7,9,11,13,15,17,19,21,23,25,27,29))+
   scale_y_continuous(breaks = c(0.846,0.847,0.848,0.849,0.850,0.851,0.852,0.853))+
-  ggtitle("Średni błąd a wielkość okna transformacji spektralnej SG1d")+
+  ggtitle("Mean Spectra Error vs SG1d window size")+
   theme_bw()
-
 ```
 
-# Continue modelling with window 7 and 9 - best results 
+# Continue modelling with window 7 and 9 - indicate the best results 
  
-#############################################Gaussian Mixture Modelling##################################
+# aussian Mixture Modelling
 
 PCA Chemistry and Spectra of FULL dataset
 
