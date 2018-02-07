@@ -21,17 +21,18 @@ library(preprocessCore)
 # Spectral and Geochemical Data 
 g = 'chemia_leb.txt'
 s = 'raw_leb.txt'
-# load chemical dataset
+
+# Load chemical dataset
 chemia = as.data.frame(read.table(g, header = TRUE, stringsAsFactors = FALSE))
 chemia = chemia[,-1]
-
 
 # Quantile normalization for Geochemical data
 
 w = as.matrix(chemia)
-d = normalize.quantiles(w) ### works the best
+d = normalize.quantiles(w) 
 colnames(d) = colnames(chemia)
-# load spectra
+
+# Load spectra
 spektra = as.data.frame(read.table("raw_sprawdzone.txt", header = TRUE, stringsAsFactors = FALSE))
 spektra = spektra[,-1]
 
@@ -49,12 +50,7 @@ align_lines <- function(matrix,length,fill=NA) {
   m[,range+1:ncol(matrix)+range] <- matrix
   m
 }
-
-
-Spectral SG1D transformation and rows aligning
-
 ```{r}
-
 # Savitzky-Golay 1st derivative transformation and alignment of lines
 spectra_transform <-function(spectra){
   m = 1
@@ -113,7 +109,7 @@ mean_error_spectra <- function(align_spectra) {
   w25_w27 = align_spectra[[12]] + align_spectra[[13]] * 10000,
   w27_w29 = align_spectra[[13]] + align_spectra[[14]] * 10000,
   w29_w31 = align_spectra[[14]] + align_spectra[[15]] * 10000)
-  mean_err = t(data.frame(list(w3=mean(matrix_error[[1]]),
+  mean_error = t(data.frame(list(w3=mean(matrix_error[[1]]),
                                w5=mean(matrix_error[[2]]),
                                w7=mean(matrix_error[[3]]),
                                w9=mean(matrix_error[[4]]),
@@ -127,7 +123,7 @@ mean_error_spectra <- function(align_spectra) {
                                w25=mean(matrix_error[[12]]),
                                w27=mean(matrix_error[[13]]),
                                w29=mean(matrix_error[[14]]))))
-  return(mean_err)
+  return(mean_error)
 }
 
 mean_error = mean_error_spectra(spec_sg1d)
@@ -138,12 +134,12 @@ Plot mean error of spectra vs SG1D window size
 ```{r}
 column = "mean_error"
 colnames(mean_error) = column
-okna =  data.frame(Okno = c(3, 5, 7, 9, 11, 13,
+window =  data.frame(win = c(3, 5, 7, 9, 11, 13,
                             15, 17, 19, 21,23,25,
                             27,29))
-wykres1 = cbind(mean_error,okna)
+plot1 = cbind(mean_error,window)
 
-ggplot(wykres1, aes(x = Okno, y = Średni_błąd))+
+ggplot(plot1, aes(x = win, y = mean_error))+
   geom_point(size = 3, col = "blue", shape = 21)+
   geom_line(col = "blue")+
   theme(plot.title = element_text(hjust = 0.5, size=rel(1.5), face = "bold"))+
@@ -155,11 +151,9 @@ ggplot(wykres1, aes(x = Okno, y = Średni_błąd))+
   theme_bw()
 ```
 
-# Continue modelling with window 7 and 9 - indicate the best results 
+Continue modelling with window 7 and 9 - indicate the best results 
  
-# aussian Mixture Modelling
-
-PCA Chemistry and Spectra of FULL dataset
+# PCA Chemistry and Spectra of FULL dataset
 
 1. PCA modelling and extraction of loadings
 
@@ -169,19 +163,17 @@ chemia = data[[2]]
 chemia = as.matrix(chemia[,-1])
 w7_w9 = list(spec_sg1d[[3]],spec_sg1d[[4]]) 
 
-# Save PCA results for chemistry and spectra into list
+#Save PCA results for chemistry and spectra into list
 
-PCA_chemia <- function(chemia) {
-  
+PCA_chemia <- function(chemia){ 
   PCA_chemia = list(PCA_chem_7= pca(chemia,ncomp = 7,center = F,scale = F),
                     PCA_chem_8= pca(chemia,ncomp = 8,center = F,scale = F),
                     PCA_chem_9= pca(chemia,ncomp = 9,center = F,scale = F),
                     PCA_chem_10= pca(chemia,ncomp = 10,center = F,scale = F))
-  
   return(PCA_chemia)
 }  
 
-PCA_spectra <- function(spectra) {
+PCA_spectra <- function(spectra){
   PCA_spectra = list( PCA_w7_7= pca(spectra[[1]],ncomp = 7,center = F,scale = F),
                       PCA_w7_8= pca(spectra[[1]],ncomp = 8,center = F,scale = F),
                       PCA_w7_9= pca(spectra[[1]],ncomp = 9,center = F,scale = F),
@@ -196,7 +188,8 @@ PCA_spectra <- function(spectra) {
 PCA_chem = PCA_chemia(chemia)
 PCA_spec = PCA_spectra(w7_w9)
 
-# Save PCA loadings of chemistry and spectra to list 
+#Save PCA loadings of chemistry and spectra to list 
+
 PCA_load_chem <- function(PCA_chem) {
   PCA_chem_load= list(as.matrix(PCA_chem$PCA_chem_7$x),
                       as.matrix(PCA_chem$PCA_chem_8$x),
@@ -221,9 +214,10 @@ PCA_load_chem = PCA_load_chem(PCA_chem)
 PCA_load_spec = PCA_load_spec(PCA_spec)
 ```
 
-2. Calculation of Manhattan and Mahalanobis Distance 
+# 2. Calculation of Manhattan and Mahalanobis Distance 
 
 Chemistry
+
 ```{r}
 manh_chemia <- function(PCA_loadings) {
   manhat=list(manh_chemia_7= as.matrix(dist(PCA_load_chem[[1]], method = "Manhattan")),
@@ -276,9 +270,7 @@ manh_spect = manh_spectra(PCA_load_chem)
 mahal_spect = mahal_spectra(PCA_load_chem)
  
 ```
-
-
-#############################Gaussian Mixture Modelling################################################  
+# Gaussian Mixture Modelling 
 
 1. Mixture model chemia
 Manhattan
