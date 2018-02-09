@@ -413,11 +413,10 @@ ext_spec_mod_mahal <- function(mixture_model) {
 ext_spec_mod_mahal = ext_spec_mod_mahal(spec_mod_mahal)
 ```
 
-
 # Clustering Validation
 
 1. V- Measure validation function - comparison of chemical and spectral classifications
-
+Forked from: https://gist.github.com/jayelm/9a024359b15516a3d530023ad9ab413d
 ```{r}
 library(infotheo)
 
@@ -508,5 +507,5 @@ ggplot(v.measure_score, aes(x = V.Measure,y = Distance_&_window_size))+
         axis.text.y = element_text(face="bold", size=11))+
   scale_x_continuous(breaks=c(0.4,0.5,0.6,0.7,0.8,0.9,1))+
   geom_text(aes(label=V.Measure,hjust = 0,vjust = 1), size=4, colour="red")+
-  ggtitle("V-Measure Manhattan and Mahalanobis distance")
+  ggtitle("V-Measure for Gaussian Mixture models clustering - Manhattan and Mahalanobis distance")
 ```
