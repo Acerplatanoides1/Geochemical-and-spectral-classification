@@ -3,7 +3,7 @@
 
 ```{r setup}
 # Change root direction in R Notebook
-knitr::opts_knit$set(root.dir = normalizePath("C:/Users/Mateusz Obst/Desktop/Hyperspectral RS/R do pracy/Chemia Modelowanie/Modelowanie geochemiczne i spektr/Data/Input/Do analizy/")) 
+knitr::opts_knit$set(root.dir = normalizePath("C:/Users/Mateusz Obst/Desktop/Hyperspectral RS/R/Chemia Modelowanie/Modelowanie geochemiczne i spektr/Data/Input/Do analizy/")) 
 ```
 
 ```{r }
@@ -415,7 +415,7 @@ ext_spec_mod_mahal = ext_spec_mod_mahal(spec_mod_mahal)
 
 # Clustering Validation
 
-1. V- Measure validation function - comparison of chemical and spectral classifications
+1. V- Measure validation method function - comparison of chemical and spectral clustering
 Forked from: https://gist.github.com/jayelm/9a024359b15516a3d530023ad9ab413d
 ```{r}
 library(infotheo)
@@ -509,3 +509,4 @@ ggplot(v.measure_score, aes(x = V.Measure,y = Distance_&_window_size))+
   geom_text(aes(label=V.Measure,hjust = 0,vjust = 1), size=4, colour="red")+
   ggtitle("V-Measure for Gaussian Mixture models clustering - Manhattan and Mahalanobis distance")
 ```
+Mahalanobis distance meets the V- Measure completeness and homogeneity criterion perfectly. 
