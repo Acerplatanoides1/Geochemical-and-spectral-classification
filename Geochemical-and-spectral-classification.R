@@ -1,43 +1,42 @@
-# Data Preprocessing
+#Data Transformation
 1. Data setup
 
 ```{r setup}
-# Change root direction in R Notebook
-knitr::opts_knit$set(root.dir = normalizePath("C:/Users/Mateusz Obst/Desktop/Hyperspectral RS/R/Chemia Modelowanie/Modelowanie geochemiczne i spektr/Data/Input/Do analizy/")) 
+# Change data folder direction
+knitr::opts_knit$set(root.dir = normalizePath("C:/Users/...")) 
 ```
 
 ```{r }
-# Packages
+# Load package 
 library(prospectr)
 library(ggplot2)
 library(mixOmics)
 library(mclust)
 library(proxy)
 library(VGAM)
+#quantile normalization
 # source('http://bioconductor.org/biocLite.R')
 # biocLite('preprocessCore')
 library(preprocessCore)
 
-# Spectral and Geochemical Data 
+# Load data files
 g = 'chemia_leb.txt'
-s = 'raw_leb.txt'
-
-# Load chemical dataset
+s = 'raw_pop.txt'
+# Load chemical dataset 
 chemia = as.data.frame(read.table(g, header = TRUE, stringsAsFactors = FALSE))
 chemia = chemia[,-1]
-
-# Quantile normalization for Geochemical data
+chemia = round(chemia, digits = 2)
 
 w = as.matrix(chemia)
 d = normalize.quantiles(w) 
 colnames(d) = colnames(chemia)
 
-# Load spectra
-spektra = as.data.frame(read.table("raw_sprawdzone.txt", header = TRUE, stringsAsFactors = FALSE))
-spektra = spektra[,-1]
+# Load spectral dataset 
+spectra = read.table(s, header = TRUE, stringsAsFactors = FALSE, row.names = 1)
+spectra = as.matrix(spectra)
+spectra = round(spectra, digits = 7)
 
-data = list(spektra = as.matrix(spektra), chemia = as.matrix(d))
-
+data = list(spectra = spectra, chemia = d)
 ```
 
 Aligning function for transformed spectra
@@ -50,8 +49,11 @@ align_lines <- function(matrix,length,fill=NA) {
   m[,range+1:ncol(matrix)+range] <- matrix
   m
 }
-```{r}
-# Savitzky-Golay 1st derivative transformation and alignment of lines
+```
+
+Spectral SG1D transformation and rows aligning
+
+```
 spectra_transform <-function(spectra){
   m = 1
   p = 2
@@ -70,7 +72,7 @@ spectra_transform <-function(spectra){
                       sg1d_w27=savitzkyGolay(spectra,m,p,27),
                       sg1d_w29=savitzkyGolay(spectra,m,p,29),
                       sg1d_w31=savitzkyGolay(spectra,m,p,31))
-  spec_ali = list(sg1d_w3 = align_lines(spectra_sg1d[[1]], 2151, fill = NA),
+  spec_ali = list(sg1d_w3 = align_lines(spectra_sg1d[[1]], 2151, fill = NA), ### 0 introduced in align function
                   sg1d_w5 =align_lines(spectra_sg1d[[2]], 2151, fill = NA),
                   sg1d_w7=align_lines(spectra_sg1d[[3]], 2151, fill = NA),
                   sg1d_w9=align_lines(spectra_sg1d[[4]], 2151, fill = NA),
@@ -89,6 +91,7 @@ spectra_transform <-function(spectra){
 }
 
 spec_sg1d = spectra_transform(data[[1]])
+
 ```
 
 # Calculate Mean error of Spectra
