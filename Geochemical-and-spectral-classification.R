@@ -21,7 +21,7 @@ library(preprocessCore)
 
 # Load data files
 g = 'chemia_leb.txt'
-s = 'raw_pop.txt'
+s = 'raw_spectra.txt'
 # Load chemical dataset 
 chemia = as.data.frame(read.table(g, header = TRUE, stringsAsFactors = FALSE))
 chemia = chemia[,-1]
@@ -72,7 +72,7 @@ spectra_transform <-function(spectra){
                       sg1d_w27=savitzkyGolay(spectra,m,p,27),
                       sg1d_w29=savitzkyGolay(spectra,m,p,29),
                       sg1d_w31=savitzkyGolay(spectra,m,p,31))
-  spec_ali = list(sg1d_w3 = align_lines(spectra_sg1d[[1]], 2151, fill = NA), ### 0 introduced in align function
+  spec_ali = list(sg1d_w3 = align_lines(spectra_sg1d[[1]], 2151, fill = NA), ### ERROR!!! 0's introduced to matrix
                   sg1d_w5 =align_lines(spectra_sg1d[[2]], 2151, fill = NA),
                   sg1d_w7=align_lines(spectra_sg1d[[3]], 2151, fill = NA),
                   sg1d_w9=align_lines(spectra_sg1d[[4]], 2151, fill = NA),
