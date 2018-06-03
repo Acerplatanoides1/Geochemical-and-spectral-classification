@@ -1,6 +1,4 @@
----
-Title: "Mixture Spectral Modelling"
----
+# Spectral Mixture Modelling with Geochemical Data
 
 #Data Transformation
 1. Data setup
@@ -34,7 +32,6 @@ chemia = round(chemia, digits = 2)
 # Load spectral dataset 
 spectra = as.matrix(read.table(s, header = TRUE, stringsAsFactors = FALSE, row.names = 1))
 spectra = round(spectra, digits = 7)
-
 
 #Aligning function for transformed spectra
 
