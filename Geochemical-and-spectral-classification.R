@@ -28,7 +28,7 @@ chemia = chemia[,-1]
 # Normalize dataset
 chemia = normalize.quantiles(as.matrix(chemia)) 
 chemia = round(chemia, digits = 2)
-?normalize.quantiles
+
 # Load spectral dataset 
 spectra = as.matrix(read.table(s, header = TRUE, stringsAsFactors = FALSE, row.names = 1))
 spectra = round(spectra, digits = 7)
