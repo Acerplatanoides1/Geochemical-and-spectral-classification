@@ -45,7 +45,6 @@ align_lines <- function(lines,length,fill=NA) {
 
 #Spectral SG1D transformation and rows aligning
 
-
 m=1
 p=2
 
@@ -85,10 +84,8 @@ ggplot(plot1, aes(x = window, y = mean_error))+
   theme(axis.text.x = element_text(face="bold", size=10),
         axis.text.y = element_text(face="bold", size=10))
 
-
 #Continue modelling with window 7 and 9 - best results. 
  
-
 #Gaussian Mixture Modelling
 
 PCA Chemistry and Spectra of FULL dataset
