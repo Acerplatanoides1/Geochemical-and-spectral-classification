@@ -88,9 +88,9 @@ ggplot(plot1, aes(x = window, y = mean_error))+
  
 #Gaussian Mixture Modelling
 
-PCA Chemistry and Spectra of FULL dataset
+PCA Chemistry and Spectra 
 
-#1. PCA modelling and extraction of loadings
+1. PCA modelling and extraction of loadings
 
 # PCA for chemistry
 
@@ -120,7 +120,7 @@ PCA_spect_load = list(PCA_spectra_w7[[10]],PCA_spectra_w7[[25]],PCA_spectra_w7[[
                       PCA_spectra_w9[[10]],PCA_spectra_w9[[25]],PCA_spectra_w9[[40]],PCA_spectra_w9[[55]])
 
 
-#2. Calculation of Manhattan and Mahalanobis Distance with PCA Loadings
+2. Calculation of Manhattan and Mahalanobis Distance with PCA Loadings
 
 #Chemistry
 
@@ -175,9 +175,9 @@ for (i in 5:8) {
 mahal_spect = list(mahal_spect_w7[[1]],mahal_spect_w7[[2]],mahal_spect_w7[[3]],mahal_spect_w7[[4]],
                   mahal_spect_w9[[1]],mahal_spect_w9[[2]],mahal_spect_w9[[3]],mahal_spect_w9[[4]])
 
-#Gaussian Mixture Modelling  
+Gaussian Mixture Modelling  
 
-#1. Mixture model chemistry
+1. Mixture model chemistry
 
 #Manhattan
 
@@ -200,7 +200,7 @@ chem_mod_man = list(chem_man_mod[[14]],chem_man_mod[[29]],chem_man_mod[[44]],che
                 
 chem_mod_mahal = list(chem_mahal_mod[[14]],chem_mahal_mod[[29]],chem_mahal_mod[[44]],chem_mahal_mod[[59]])
 
-#2. Mixture model spectra
+2. Mixture model spectra
 
 #Manhattan
 
@@ -239,9 +239,9 @@ spect_mod_mahal_w7 = list(spect_mahal_mod_w7[[14]],spect_mahal_mod_w7[[29]],spec
 spect_mod_mahal_w9 = list(spect_mahal_mod_w9[[14]],spect_mahal_mod_w9[[29]],spect_mahal_mod_w9[[44]],spect_mahal_mod_w9[[59]])
 ```
 
-#Clustering Validation
+Clustering Validation
 
-#1. V- Measure validation function - comparison of chemical and spectral classifications
+1. V- Measure validation function - comparison of chemical and spectral classifications
 
 library(infotheo)
 
@@ -269,7 +269,7 @@ v.measure <- function(a, b) {
   v.measure.score
 }
 
-#2. V-Measure calculation
+2. V-Measure calculation
 
 #Manhattan
 
@@ -307,7 +307,7 @@ for (i in 1:4) {
   v.measure_mahal_w9 = append(v.measure_mahal_w9,list(unique(v)))
 }
 
-#3. V-Measure graph
+3. V-Measure graph
 
 # Merge v-measure score
 
